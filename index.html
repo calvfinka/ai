@@ -7,27 +7,88 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="logo">✦ GoWithDME AI</div>
-      <button class="new-btn">+ New Project</button>
-      <p class="label">RECENT</p>
-      <div class="recent">Belum ada project</div>
-    </aside>
-    <main>
-      <h1>Hi Jurkon.<br><span>What will you build next?</span></h1>
-      <div class="prompt-box">
-        <textarea id="promptInput" placeholder="Describe the app you want to build..."></textarea>
-        <div class="actions">
-          <button>📎 Attach</button>
-          <button id="buildBtn">Build →</button>
-        </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+    <symbol id="i-mountain" viewBox="0 0 24 24"><path d="M3 20l6-11 4 7 3-4 5 8z"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 5a3 3 0 0 1 0 6M18 15c2 .6 3 2.2 3 5"/></symbol>
+    <symbol id="i-layout" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+  </svg>
+
+  <div class="layout" id="layout">
+    <aside class="sidebar" id="sidebar" aria-label="Menu utama">
+      <div class="side-head">
+        <div class="logo">✦ GoWithDME AI</div>
+        <button type="button" class="icon-btn plain" id="closeBtn" aria-label="Tutup menu"><svg class="ic"><use href="#i-x"/></svg></button>
       </div>
-      <div id="preview"></div>
+      <nav class="side-body">
+        <button type="button" class="nav-item primary" id="newBtn"><svg class="ic"><use href="#i-plus"/></svg>Rencana Baru</button>
+        <a class="nav-item" href="chat.html"><svg class="ic"><use href="#i-chat"/></svg>Chat DME</a>
+        <button type="button" class="nav-item" id="searchBtn"><svg class="ic"><use href="#i-search"/></svg>Cari</button>
+
+        <button type="button" class="nav-item" id="plansToggle" aria-expanded="true">
+          <svg class="ic"><use href="#i-grid"/></svg>Semua rencana
+          <span class="end"><span id="planCount">0</span><svg class="ic" id="plansChev"><use href="#i-chev"/></svg></span>
+        </button>
+        <div class="sub" id="plansList"></div>
+
+        <div class="nav-group">Jelajahi</div>
+        <a class="nav-item" href="https://gowithdme.com/gunung.html"><svg class="ic"><use href="#i-mountain"/></svg>Gunung</a>
+        <a class="nav-item" href="https://gowithdme.com/event.html"><svg class="ic"><use href="#i-ticket"/></svg>Konser &amp; event</a>
+        <a class="nav-item" href="https://gowithdme.com/komunitas.html"><svg class="ic"><use href="#i-users"/></svg>Komunitas</a>
+        <button type="button" class="nav-item" id="tplLink"><svg class="ic"><use href="#i-layout"/></svg>Template</button>
+      </nav>
+      <div class="side-foot"><div id="authBar" class="account"></div></div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <main>
+      <header class="topbar">
+        <button type="button" class="icon-btn plain menu-btn" id="menuBtn" aria-label="Buka menu"><svg class="ic"><use href="#i-menu"/></svg></button>
+        <div class="logo top-logo">✦ GoWithDME AI</div>
+        <a class="avatar top-avatar" id="topAvatar" href="login.html">Masuk</a>
+      </header>
+
+      <div class="content">
+        <section class="hero">
+          <h1 id="greet">Selamat datang.<br><span>Mau rencanain apa hari ini?</span></h1>
+          <div class="prompt-box">
+            <textarea id="promptInput" aria-label="Rencana yang ingin dibuat" placeholder="Contoh: Rencana pendakian Gunung Prau 2 hari 1 malam, atau persiapan nonton konser di Jakarta..."></textarea>
+            <div class="actions">
+              <div class="left">
+                <button type="button" class="icon-btn" aria-label="Lampirkan file"><svg class="ic"><use href="#i-plus"/></svg></button>
+                <select class="sel" id="kind" aria-label="Jenis rencana">
+                  <option value="gunung">Pendakian</option>
+                  <option value="konser">Konser</option>
+                  <option value="trip">Trip Santai</option>
+                </select>
+              </div>
+              <button type="button" class="icon-btn" id="buildBtn" aria-label="Buat rencana"><svg class="ic"><use href="#i-send"/></svg></button>
+            </div>
+          </div>
+          
+        </section>
+
+        <section id="tabsSection">
+          <div class="tabs" role="tablist">
+            <button type="button" class="tab" role="tab" id="tabRecent" aria-selected="true">Terbaru</button>
+            <button type="button" class="tab" role="tab" id="tabTpl" aria-selected="false">Template</button>
+          </div>
+          <div class="cards" id="cards"></div>
+        </section>
+      </div>
     </main>
   </div>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/preview.js"></script>
+  <script src="assets/js/auth.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>
