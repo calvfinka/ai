@@ -4,13 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0b1210" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f4f7f5" media="(prefers-color-scheme: light)">
   <title>AI — GoWithDME</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
   <div class="app">
     <header class="bar">
-      <div class="brand">GoWithDME <span>AI</span></div>
+      <div class="brand"><span class="logo-dot"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg></span>GoWithDME <span class="accent">AI</span></div>
       <div class="bar-actions">
         <button type="button" class="btn-icon" id="historyBtn" aria-label="Riwayat chat" title="Riwayat">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -21,7 +23,7 @@
       </div>
     </header>
 
-    <div class="modes" id="modes" role="tablist" aria-label="Mode">
+    <div class="modes" id="modes" role="tablist" aria-label="Mode" data-i="0"><i class="pill" aria-hidden="true"></i>
       <button type="button" role="tab" data-mode="gunung">Gunung</button>
       <button type="button" role="tab" data-mode="konser">Konser</button>
       <button type="button" role="tab" data-mode="trip">Trip</button>
