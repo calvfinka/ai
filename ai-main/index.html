@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI - GoWithDME</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">✦ GoWithDME AI</div>
+      <button class="new-btn">+ Rencana Baru</button>
+      <p class="label">Terbaru</p>
+      <div class="recent">Belum ada rencana</div>
+    </aside>
+    <main>
+      <div id="authBar" class="auth-bar"></div>
+      <h1>Selamat datang.<br><span>Mau rencanain apa hari ini?</span></h1>
+      <div class="prompt-box">
+        <textarea id="promptInput" aria-label="Rencana yang ingin dibuat" placeholder="Contoh: Rencana pendakian Gunung Prau 2 hari 1 malam, atau persiapan nonton konser di Jakarta..."></textarea>
+        <div class="actions">
+          <button type="button">📎 Lampirkan</button>
+          <button type="button" id="buildBtn">Buat Rencana</button>
+        </div>
+      </div>
+      <div id="preview"></div>
+    </main>
+  </div>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/preview.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

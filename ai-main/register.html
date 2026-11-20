@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar - GoWithDME AI</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="logo">✦ GoWithDME AI</div>
+      <h2>Buat akun GoWithDME AI</h2>
+      <p class="auth-sub">Simpan rencana pendakian &amp; konsermu di satu tempat.</p>
+
+      <p id="authMsg" class="auth-msg" role="alert" hidden></p>
+
+      <form id="registerForm" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="nama@email.com">
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input id="password" type="password" autocomplete="new-password">
+            <button type="button" id="pwToggle" class="pw-toggle" aria-pressed="false">Lihat Password</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="password2">Ulangi password</label>
+          <input id="password2" type="password" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn-main">Daftar</button>
+      </form>
+
+      <div class="auth-links">
+        <span>Sudah punya akun? <a href="login.html">Masuk</a></span>
+      </div>
+      <a href="index.html" class="btn-outline auth-back">Kembali ke Beranda</a>
+    </div>
+  </div>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

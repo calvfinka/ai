@@ -1,0 +1,70 @@
+*{box-sizing:border-box}
+body{margin:0;background:#0a0a0a;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,textarea{font:inherit}
+a{color:#fff}
+:focus-visible{outline:2px solid #fff;outline-offset:2px}
+
+/* Layout utama */
+.layout{display:flex;min-height:100vh}
+.sidebar{width:240px;flex-shrink:0;border-right:1px solid #222;padding:20px}
+.logo{font-weight:700;margin-bottom:20px}
+.new-btn{width:100%;padding:10px;border-radius:8px;background:#fff;color:#000;border:0;cursor:pointer;font-weight:600}
+.label{color:#888;font-size:12px;margin-top:30px}
+.recent{color:#888;font-size:14px}
+main{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;padding:18vh 20px 40px}
+h1{font-size:42px;text-align:center;line-height:1.2;margin:0}
+h1 span{color:#888}
+.prompt-box{width:100%;max-width:650px;background:#1a1a1a;border:1px solid #333;border-radius:14px;padding:14px;margin-top:30px}
+.prompt-box textarea{width:100%;height:80px;background:transparent;border:0;color:#fff;outline:none;resize:none;font-size:15px}
+.actions{display:flex;justify-content:space-between}
+.actions button{padding:8px 14px;border-radius:8px;border:0;cursor:pointer}
+#buildBtn{background:#fff;color:#000;font-weight:700}
+#preview{width:100%;max-width:650px;margin-top:20px}
+
+/* Bar akun di pojok kanan atas */
+.auth-bar{position:absolute;top:16px;right:20px;display:flex;align-items:center;gap:12px;max-width:calc(100% - 40px)}
+.auth-email{color:#aaa;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.btn-sm{padding:8px 16px;border-radius:8px;border:1px solid #333;background:transparent;color:#fff;cursor:pointer;font-size:14px;text-decoration:none;display:inline-block}
+.btn-sm.solid{background:#fff;color:#000;border-color:#fff;font-weight:600}
+
+/* Halaman Masuk / Daftar */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.auth-card{width:100%;max-width:400px;background:#1a1a1a;border:1px solid #333;border-radius:14px;padding:32px 28px}
+.auth-card .logo{text-align:center;margin-bottom:24px}
+.auth-card h2{font-size:22px;margin:0 0 6px;text-align:center}
+.auth-sub{color:#888;font-size:14px;text-align:center;margin:0 0 24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;margin-bottom:6px;color:#ddd}
+.field input{width:100%;padding:11px 12px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#fff;font-size:16px}
+.field input:focus{outline:none;border-color:#fff}
+.field input[aria-invalid="true"]{border-color:#e5484d}
+.pw-wrap{display:flex;gap:8px}
+.pw-wrap input{flex:1;min-width:0}
+.pw-toggle{padding:0 12px;border:1px solid #333;background:transparent;color:#fff;border-radius:8px;cursor:pointer;font-size:13px;white-space:nowrap}
+.btn-main{width:100%;padding:12px;border:0;border-radius:8px;background:#fff;color:#000;font-weight:700;font-size:15px;cursor:pointer}
+.btn-main:hover,.new-btn:hover,#buildBtn:hover{background:#e6e6e6}
+.btn-outline{width:100%;padding:12px;border:1px solid #333;border-radius:8px;background:transparent;color:#fff;font-size:15px;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.btn-outline:hover,.btn-sm:hover,.pw-toggle:hover{border-color:#666}
+.divider{display:flex;align-items:center;gap:12px;color:#888;font-size:13px;margin:20px 0}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:#333}
+.auth-msg{font-size:14px;margin:0 0 16px;padding:10px 12px;border-radius:8px;border:1px solid #333;color:#ddd}
+.auth-msg.error{border-color:#e5484d;color:#ff9a9d}
+.auth-msg[hidden]{display:none}
+.auth-links{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:20px;font-size:14px;color:#888}
+.auth-links a{color:#fff}
+.auth-back{margin-top:12px}
+.forgot{text-align:right;margin:-6px 0 16px;font-size:13px}
+.forgot a{color:#aaa}
+
+/* HP */
+@media (max-width:720px){
+  .layout{flex-direction:column}
+  .sidebar{width:100%;border-right:0;border-bottom:1px solid #222;padding:16px}
+  main{padding-top:72px}
+  h1{font-size:30px}
+  .auth-bar{top:12px;right:16px}
+  .auth-email{max-width:140px}
+  .auth-page{padding:0;align-items:stretch;justify-content:stretch}
+  .auth-card{max-width:none;border:0;border-radius:0;padding:32px 20px;display:flex;flex-direction:column;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
