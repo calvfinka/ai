@@ -90,29 +90,24 @@
     });
   }
 
-  /* Bar akun di beranda */
+  /* Bar akun: sidebar + avatar di top bar (HP) */
   function initAuthBar() {
-    var bar = $('authBar');
+    var bar = $('authBar'), top = $('topAvatar'), user = getUser();
+    if (top) {
+      top.textContent = user ? user.charAt(0).toUpperCase() : 'Masuk';
+      top.href = user ? '#' : 'login.html';
+      top.onclick = function (e) { if (getUser()) { e.preventDefault(); document.dispatchEvent(new Event('dme:menu')); } };
+    }
     if (!bar) return;
     bar.textContent = '';
-    var user = getUser();
     if (user) {
-      var span = document.createElement('span');
-      span.className = 'auth-email';
-      span.textContent = user;
-      span.title = user;
-      var out = document.createElement('button');
-      out.type = 'button';
-      out.className = 'btn-sm';
-      out.textContent = 'Keluar';
-      out.addEventListener('click', function () { clearUser(); initAuthBar(); });
-      bar.appendChild(span);
-      bar.appendChild(out);
+      var av = document.createElement('span'); av.className = 'avatar'; av.textContent = user.charAt(0).toUpperCase();
+      var span = document.createElement('span'); span.className = 'auth-email'; span.textContent = user; span.title = user;
+      var out = document.createElement('button'); out.type = 'button'; out.className = 'btn-sm'; out.textContent = 'Keluar';
+      out.addEventListener('click', function () { clearUser(); initAuthBar(); document.dispatchEvent(new Event('dme:auth')); });
+      bar.appendChild(av); bar.appendChild(span); bar.appendChild(out);
     } else {
-      var a = document.createElement('a');
-      a.href = 'login.html';
-      a.className = 'btn-sm solid';
-      a.textContent = 'Masuk';
+      var a = document.createElement('a'); a.href = 'login.html'; a.className = 'btn-sm solid block'; a.textContent = 'Masuk';
       bar.appendChild(a);
     }
   }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat DME - GoWithDME AI</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="chat-page">
+  <header class="chat-head">
+    <a class="icon-btn plain" href="index.html" aria-label="Kembali ke Beranda">←</a>
+    <div class="chat-title"><strong>DME</strong><span>Teman Jalan GoWithDME</span></div>
+    <div class="head-actions">
+      <button type="button" class="btn-sm" id="histBtn">Riwayat</button>
+      <button type="button" class="btn-sm" id="newChat">Baru</button>
+      <button type="button" class="btn-sm" id="setBtn">Setelan</button>
+    </div>
+  </header>
+
+  <div class="mode-row">
+    <label for="mode">Mode</label>
+    <select class="sel" id="mode">
+      <option value="gunung">Gunung</option>
+      <option value="konser">Konser</option>
+      <option value="trip">Trip Santai</option>
+    </select>
+  </div>
+
+  <div class="msgs" id="msgs" aria-live="polite"></div>
+
+  <div class="composer">
+    <textarea id="input" rows="1" aria-label="Pesan" placeholder="Tulis pertanyaanmu..."></textarea>
+    <button type="button" class="icon-btn send" id="sendBtn" aria-label="Kirim">➤</button>
+  </div>
+
+  <div class="panel" id="histPanel" hidden>
+    <div class="panel-card">
+      <div class="panel-head"><h2>Riwayat chat</h2><button type="button" class="icon-btn plain" data-close aria-label="Tutup">✕</button></div>
+      <div id="histList"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="setPanel" hidden>
+    <div class="panel-card">
+      <div class="panel-head"><h2>Setelan AI</h2><button type="button" class="icon-btn plain" data-close aria-label="Tutup">✕</button></div>
+      <p class="auth-sub" style="text-align:left">Key disimpan hanya di browser ini, tidak dikirim ke tempat lain selain Groq dan Google. Jangan tulis key asli di file yang di-push ke GitHub.</p>
+      <div class="field"><label for="kGroq">Groq API key</label><input id="kGroq" type="password" autocomplete="off" placeholder="gsk_..."></div>
+      <div class="field"><label for="kGemini">Gemini API key</label><input id="kGemini" type="password" autocomplete="off" placeholder="AIza..."></div>
+      <button type="button" class="btn-main" id="saveKeys">Simpan</button>
+      <p id="setMsg" class="auth-msg" hidden style="margin-top:12px"></p>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/chat.js"></script>
+</body>
+</html>
