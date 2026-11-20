@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI - GoWithDME</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo">✦ GoWithDME AI</div>
+      <button class="new-btn">+ New Project</button>
+      <p class="label">RECENT</p>
+      <div class="recent">Belum ada project</div>
+    </aside>
+    <main>
+      <h1>Hi Jurkon.<br><span>What will you build next?</span></h1>
+      <div class="prompt-box">
+        <textarea id="promptInput" placeholder="Describe the app you want to build..."></textarea>
+        <div class="actions">
+          <button>📎 Attach</button>
+          <button id="buildBtn">Build →</button>
+        </div>
+      </div>
+      <div id="preview"></div>
+    </main>
+  </div>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/preview.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
