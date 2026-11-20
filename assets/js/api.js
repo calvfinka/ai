@@ -1,4 +1,4 @@
-/* Mesin chat DME: Groq (gpt-oss-120b) -> Groq (llama-3.3-70b) -> Gemini 2.5 Flash */
+/* Mesin chat: Groq (model utama) -> Groq (cadangan) -> Gemini */
 (function () {
   var PERSONA =
     'Kamu adalah DME, "Teman Jalan GoWithDME": asisten perencana perjalanan untuk pendaki, penonton konser, dan traveler di Indonesia.\n' +
@@ -14,120 +14,82 @@
     trip: 'Mode: Trip Santai. Fokus trip ringan: itinerary tidak padat, tempat makan dan istirahat, transportasi, budget, dan rencana cadangan kalau hujan.'
   };
 
-  var MSG = {
-    busy: 'Lagi rame banget, coba lagi 1 menit ya',
-    nokey: 'API key belum diisi. Buka Setelan, lalu isi key Groq atau Gemini.',
-    badkey: 'API key ditolak. Periksa lagi key-nya di Setelan.'
+  var ERR = {
+    nokey: 'API key belum diisi. Buka file config.js di root folder, isi GROQ_API_KEY atau GEMINI_API_KEY, lalu muat ulang halaman.',
+    badkey: 'API key ditolak. Periksa lagi key di config.js.',
+    busy: 'Lagi ramai, coba lagi sebentar ya.'
   };
 
-  function cfg() { return window.DME_CONFIG || {}; }
-  function keys() {
-    var s = {};
-    try { s = JSON.parse(localStorage.getItem('dme_keys')) || {}; } catch (e) {}
-    var c = cfg();
-    return { groq: String(c.GROQ_API_KEY || s.groq || '').trim(), gemini: String(c.GEMINI_API_KEY || s.gemini || '').trim() };
-  }
+  var cfg = function () { return window.DME_CONFIG || {}; };
+  var clean = function (v) { return String(v || '').trim(); };
 
-  function getPrefs() {
-    try { return JSON.parse(localStorage.getItem('dme_prefs')) || null; } catch (e) { return null; }
-  }
+  function systemPrompt(mode) { return PERSONA + '\n\n' + (MODES[mode] || MODES.trip); }
 
-  function prefBlock() {
-    var p = getPrefs();
-    if (!p) return '';
-    var parts = [];
-    if (p.level) {
-      parts.push('Level pendaki user: ' + p.level + '.');
-      if (p.level === 'pemula') parts.push('Prioritaskan gunung mudah (Prau, Papandayan, Andong, dll), jelaskan lebih detail, dan tekankan keselamatan.');
-      if (p.level === 'menengah') parts.push('Boleh sarankan gunung menengah (Gede, Merbabu, Ciremai).');
-      if (p.level === 'pro') parts.push('User berpengalaman; boleh bahas gunung tinggi/teknis (Semeru, Rinjani, Cartenz) dengan tetap menekankan protokol resmi.');
-    }
-    if (p.regions && p.regions.length) {
-      parts.push('Daerah favorit: ' + p.regions.join(', ') + '. Utamakan rekomendasi di daerah ini bila relevan.');
-    }
-    if (p.style === 'santai') parts.push('Gaya jawaban: sangat santai, hangat, seperti ngobrol sama teman.');
-    if (p.style === 'detail') parts.push('Gaya jawaban: detail, step-by-step, pakai tabel bila berguna.');
-    if (p.style === 'singkat') parts.push('Gaya jawaban: singkat, poin-poin penting saja, minim basa-basi.');
-    return parts.length ? '\n\nPreferensi user (dari onboarding):\n' + parts.join(' ') : '';
-  }
-
-  function system(mode) {
-    return PERSONA + '\n\n' + (MODES[mode] || MODES.trip) + prefBlock();
-  }
-
-  function post(url, headers, body) {
+  async function post(url, headers, body) {
     var ctl = new AbortController();
-    var t = setTimeout(function () { ctl.abort(); }, cfg().TIMEOUT_MS || 20000);
-    return fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(body), signal: ctl.signal })
-      .then(function (r) {
-        if (!r.ok) { var e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
-        return r.json();
-      })
-      .finally(function () { clearTimeout(t); });
+    var timer = setTimeout(function () { ctl.abort(); }, cfg().TIMEOUT_MS || 20000);
+    try {
+      var r = await fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(body), signal: ctl.signal });
+      if (!r.ok) { var e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+      return await r.json();
+    } finally { clearTimeout(timer); }
   }
 
-  function callGroq(model, history, mode, key) {
-    var c = cfg();
+  async function callGroq(model, history, mode, key) {
     var body = {
       model: model,
-      messages: [{ role: 'system', content: system(mode) }].concat(history),
+      messages: [{ role: 'system', content: systemPrompt(mode) }].concat(history),
       temperature: 0.7,
       max_tokens: 1800
     };
     if (model.indexOf('gpt-oss') !== -1) body.reasoning_effort = 'low';
-    return post((c.GROQ_BASE_URL || 'https://api.groq.com/openai/v1') + '/chat/completions',
-      { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key }, body)
-      .then(function (j) {
-        var t = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
-        if (!t) { var e = new Error('empty'); e.status = 0; throw e; }
-        return t;
-      });
+    var j = await post('https://api.groq.com/openai/v1/chat/completions',
+      { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key }, body);
+    var t = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+    if (!t) { var e = new Error('empty'); e.status = 0; throw e; }
+    return t;
   }
 
-  function callGemini(history, mode, key) {
-    var model = cfg().GEMINI_MODEL || 'gemini-2.5-flash';
+  async function callGemini(model, history, mode, key) {
     var body = {
-      systemInstruction: { parts: [{ text: system(mode) }] },
-      contents: history.map(function (m) { return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }; }),
+      systemInstruction: { parts: [{ text: systemPrompt(mode) }] },
+      contents: history.map(function (m) {
+        return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
+      }),
       generationConfig: { temperature: 0.7, maxOutputTokens: 1800, thinkingConfig: { thinkingBudget: 0 } }
     };
-    return post('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
-      { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body)
-      .then(function (j) {
-        var p = j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts;
-        var t = p && p.map(function (x) { return x.text || ''; }).join('');
-        if (!t) { var e = new Error('empty'); e.status = 0; throw e; }
-        return t;
-      });
+    var j = await post('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent',
+      { 'Content-Type': 'application/json', 'x-goog-api-key': key }, body);
+    var parts = j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts;
+    var t = parts && parts.map(function (x) { return x.text || ''; }).join('');
+    if (!t) { var e = new Error('empty'); e.status = 0; throw e; }
+    return t;
   }
 
-  /* history: [{role:'user'|'assistant', content}] -> Promise<{text, via}> ; reject: {code, message} */
-  function sendChat(history, mode) {
-    var k = keys(), c = cfg(), steps = [];
-    if (k.groq) {
-      steps.push({ via: c.GROQ_MODEL || 'openai/gpt-oss-120b', run: function () { return callGroq(c.GROQ_MODEL || 'openai/gpt-oss-120b', history, mode, k.groq); } });
-      steps.push({ via: c.GROQ_BACKUP_MODEL || 'llama-3.3-70b-versatile', run: function () { return callGroq(c.GROQ_BACKUP_MODEL || 'llama-3.3-70b-versatile', history, mode, k.groq); } });
+  /* history: [{role:'user'|'assistant', content}] -> {text, via}. Gagal -> {code, message} */
+  async function sendChat(history, mode) {
+    var c = cfg(), groq = clean(c.GROQ_API_KEY), gemini = clean(c.GEMINI_API_KEY), steps = [];
+
+    if (groq) {
+      var m1 = c.GROQ_MODEL || 'openai/gpt-oss-120b';
+      var m2 = c.GROQ_BACKUP_MODEL || 'llama-3.3-70b-versatile';
+      steps.push(function () { return callGroq(m1, history, mode, groq); });
+      steps.push(function () { return callGroq(m2, history, mode, groq); });
     }
-    if (k.gemini) steps.push({ via: c.GEMINI_MODEL || 'gemini-2.5-flash', run: function () { return callGemini(history, mode, k.gemini); } });
-    if (!steps.length) return Promise.reject({ code: 'nokey', message: MSG.nokey });
+    if (gemini) {
+      var m3 = c.GEMINI_MODEL || 'gemini-2.5-flash';
+      steps.push(function () { return callGemini(m3, history, mode, gemini); });
+    }
+    if (!steps.length) throw { code: 'nokey', message: ERR.nokey };
 
-    var errors = [];
-    return steps.reduce(function (p, step) {
-      return p.catch(function (prev) {
-        if (prev && prev.text) return prev;
-        return step.run().then(function (t) { return { text: t, via: step.via }; })
-          .catch(function (e) { errors.push(e && e.status); throw null; });
-      });
-    }, Promise.reject(null)).catch(function (res) {
-      if (res && res.text) return res;
-      var allAuth = errors.length && errors.every(function (s) { return s === 401 || s === 403; });
-      throw allAuth ? { code: 'badkey', message: MSG.badkey } : { code: 'busy', message: MSG.busy };
-    });
+    var statuses = [];
+    for (var i = 0; i < steps.length; i++) {
+      try { return { text: await steps[i]() }; }
+      catch (e) { statuses.push(e && e.status); }
+    }
+    var allAuth = statuses.every(function (s) { return s === 401 || s === 403; });
+    throw allAuth ? { code: 'badkey', message: ERR.badkey } : { code: 'busy', message: ERR.busy };
   }
 
-  window.DME = {
-    sendChat: sendChat,
-    hasKeys: function () { var k = keys(); return !!(k.groq || k.gemini); },
-    getPrefs: getPrefs
-  };
+  window.DME = { sendChat: sendChat };
 })();
