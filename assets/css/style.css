@@ -175,6 +175,7 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .md ul, .md ol { padding-left: 22px; }
 .md li { margin-bottom: 4px; }
 .md li::marker { color: var(--accent); }
+.md a { color: var(--accent); text-underline-offset: 2px; font-weight: 600; }
 .md code { background: var(--surface-2); padding: 1px 6px; border-radius: 6px; font-size: 13px; }
 .tbl { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
 .tbl table { border-collapse: collapse; font-size: 14px; min-width: 100%; }

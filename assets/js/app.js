@@ -28,7 +28,10 @@
     });
   }
   function inline(s) {
-    return esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>');
+    /* Tautan Markdown hanya ke gowithdme.com (karakter URL dibatasi), dibuka di tab baru */
+    return esc(s)
+      .replace(/\[([^\]]{1,120})\]\((https:\/\/gowithdme\.com\/[A-Za-z0-9\-._~\/?=#%]*)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>');
   }
   function md(text) {
     var out = [], list = null, tbl = false;
