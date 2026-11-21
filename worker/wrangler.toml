@@ -1,0 +1,12 @@
+# Konfigurasi deploy Cloudflare Worker untuk GoWithDME AI
+# Nama "dme-ai" sengaja dibuat beda dari Worker situs utama ("gowithdme"),
+# supaya situs utama tidak tertimpa.
+name = "dme-ai"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+account_id = "627504cc62bf7d8f130421ccd02e51d9"
+workers_dev = true
+
+[vars]
+# Domain yang boleh memanggil Worker ini (pisahkan dengan koma jika lebih dari satu)
+ALLOWED_ORIGINS = "https://ai.gowithdme.com"
